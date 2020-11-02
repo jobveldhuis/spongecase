@@ -1,65 +1,96 @@
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import React from 'react'
 
-export default function Home() {
-  return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+class Homepage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            output: ''
+        }
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
+        this.textToMock = this.mock.bind(this);
+    }
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+    mock(event)
+    {
+        const input = event.target.value.split('');
+        let back2 = '';
+        let back1 = '';
+        const output = input.map((char, index) => {
+            if (index === 0) {
+                back2 = this.randomUpperCase(char);
+                return back2;
+            } else if (index === 1) {
+                back1 = this.randomUpperCase(char);
 
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
+            } else {
+                if (back2 === back2.toUpperCase() && back1 === back1.toUpperCase()) {
+                    back2 = back1;
+                    back1 = char.toLowerCase();
+                } else if (back2 === back2.toLowerCase() && back1 === back1.toLowerCase()) {
+                    back2 = back1;
+                    back1 = char.toUpperCase();
+                } else {
+                    back2 = back1;
+                    back1 = this.randomUpperCase(char);
+                }
+            }
+            return back1;
+        })
 
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
+        this.setState({
+            output: output.join('')
+        })
+    }
 
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
+    randomUpperCase(char)
+    {
+        const flippedCoin = Math.floor(Math.random() * 2);
+        if (flippedCoin === 0) {
+            return char.toUpperCase();
+        } else {
+            return char.toLowerCase();
+        }
+    }
 
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
+    render() {
+        return (
+            <>
+                <div className="flex flex-col items-center justify-center h-screen">
+                    <div className="max-w-lg bg-white text-black border rounded-lg shadow-lg p-4 sm:p-6">
+                        <h1 className="font-bold text-2xl mb-2">
+                            Are ya ready kids?
+                        </h1>
+                        <p className="text-xs">
+                            Generate your own mocking Spongebob text, without any of the hassle of randomly having to press shift and/or caps lock. Just type in the text you want to mockify and we'll do the rest.
+                        </p>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
-  )
+                        <form className="mt-6">
+                            <div className="mb-4">
+                            <textarea
+                                className="shadow resize-none h-20 text-xs appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                placeholder="Enter your text here"
+                                onChange={this.textToMock}
+                                required
+                            />
+                            </div>
+                            <div className="mb-4">
+                            <textarea
+                                className="shadow resize-none h-20 text-xs appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="output"
+                                value={this.state.output}
+                                disabled
+                            />
+                            </div>
+                        </form>
+                    </div>
+                    <div className="text-xs mt-4 footer">
+                        Proudly developed by <a href="https://baukefrederik.me/">@baukefrederik</a>.
+                    </div>
+                </div>
+            </>
+        )
+    }
 }
+
+
+export default Homepage;
